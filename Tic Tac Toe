@@ -1,0 +1,199 @@
+// HTML code for Tic Tac Toe
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tic Tac Toe</title>
+    <link rel="Stylesheet" href="tic_tac_toe.css">
+</head>
+<body>
+    <div class="msg-container hide">
+        <p class="msg">Winner</p>
+        <button class="Newgame">New Game</button>
+    </div>
+    <main>
+    <h1>Tic Tac Toe</h1>
+    <div class="container">
+    <div class="game">
+        <button class="box"></button>
+        <button class="box"></button>
+        <button class="box"></button>
+        <button class="box"></button>
+        <button class="box"></button>
+        <button class="box"></button>
+        <button class="box"></button>
+        <button class="box"></button>
+        <button class="box"></button>
+    </div> 
+</div>
+   <button class="Reset">Reset Game</button>
+</main>
+    <script src="tic_tac_toe.js"></script>
+</body>
+</html>
+
+// CSS code for Tic Tac Toe
+
+*{
+    margin: 0;
+    padding: 0;
+}
+
+body{
+    background-color: #484D6D;
+    color: white;
+    text-align: center;
+}
+
+.container{
+    height: 70vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.game{
+    height: 60vmin;
+    width: 60vmin;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 1.5vmin;
+    flex-wrap: wrap;
+}
+
+.box{
+    height: 18vmin;
+    width: 18vmin;
+    border-radius: 1rem;
+    border: none;
+    box-shadow: 0 0 1rem rgba(0,0,0,0.3);
+    font-size: 8vmin;
+    color: #4B8F8C;
+    background-color: #2C365E;
+}
+
+.Reset{
+    padding: 1rem;
+    font-size: 1rem;
+    background-color: #2B193D;
+    color: aliceblue;
+    border-radius: 0.75rem;
+    border: none;
+}
+
+.Newgame{
+    padding: 1rem;
+    font-size: 1rem;
+    background-color: #2B193D;
+    color: aliceblue;
+    border-radius: 0.75rem;
+    border: none;
+}
+
+p{
+    color:#C5979D;
+    font-size: 8vmin;
+    font-weight: 700;
+}
+
+.msg-container{
+    height: 20vmin;
+}
+
+.hide{
+    display: none;
+}
+
+//JS code for Tic Tac Toe
+
+let boxes = document.querySelectorAll(".box");
+let Reset = document.querySelector(".Reset");
+let newgame = document.querySelector(".Newgame");
+let msgContainer = document.querySelector(".msg-container");
+let msg = document.querySelector(".msg");
+
+let turnX = true;
+let count = 0;
+
+const winPatterns = [
+  [0, 1, 2],
+  [3, 4, 5],
+  [6, 7, 8],
+  [0, 3, 6],
+  [1, 4, 7],
+  [2, 5, 8],
+  [2, 4, 6],
+  [0, 4, 8],
+];
+
+const resetgame = () => {
+    turnX = true;
+    enableBoxes();
+    msgContainer.classList.add("hide");
+};
+
+boxes.forEach((box) => {
+  box.addEventListener("click", () => {
+    console.log("Box was clicked");
+    if (turnX) {
+      box.innerText = "X";
+      turnX = false;
+    } else {
+      box.innerText = "O";
+      turnX = true;
+    }
+    box.disabled = true;
+    count++;
+
+    let isWinner = checkWinner();
+    if(count === 9 && !isWinner){
+        gamedraw();
+    }
+  });
+});
+
+const gamedraw = () => {
+    msg.innerText = "Game is a Draw";
+    msgContainer.classList.remove("hide");
+    disableBoxes();
+}
+
+const disableBoxes = () => {
+    for(let box of boxes){
+        box.diabled = true;
+    }
+};
+
+const enableBoxes = () => {
+    for(let box of boxes){
+        box.diabled = false;
+        box.innerText = "";
+    }
+};
+
+
+const showWinner = (winner) => {
+    msg.innerText = `Congratulations, The Winner is ${winner}`;
+    msgContainer.classList.remove("hide");
+};
+
+const checkWinner = () => {
+  for (let pattern of winPatterns) {
+    let pos1 = boxes[pattern[0]].innerText;
+    let pos2 = boxes[pattern[1]].innerText;
+    let pos3 = boxes[pattern[2]].innerText;
+
+    if (pos1 != "" && pos2 != "" && pos3 != "") {
+      if (pos1 === pos2 && pos2 === pos3) {
+        console.log("Winner is", pos1);
+        showWinner(pos1);
+      }
+    }
+  }
+};
+
+newgame.addEventListener("click", resetgame);
+Reset.addEventListener("click", resetgame);
